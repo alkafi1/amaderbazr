@@ -11,7 +11,7 @@
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-                <button class="btn btn-primary" data-toggle="modal">+ Add New</button>
+                <a href="{{route('product.create')}}"><button class="btn btn-primary" data-toggle="modal">+ Add New</button></a>
             </ol>
           </div>
           
@@ -27,6 +27,68 @@
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">All Product Here</h3>
+              </div>
+              <div id="filtering" class="ml-4 mr-4 mt-4">
+              {{-- <form action=""> --}}
+                <div class="row">
+                  <div class="form-group col-lg-3">
+                    <select class="form-control submitable"  id="category_id" required>
+                      <option value="">All Category</option>
+                      @foreach ($categories as $category)
+                      <option value="{{$category->id}}">{{$category->name}}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                  <div class="form-group col-lg-3">
+                    <select class="form-control submitable" id="subcategory_id" required>
+                      <option value="">All Sub Category</option>
+                      @foreach ($subcategories as $subcategory)
+                      <option value="{{$subcategory->id}}">{{$subcategory->subcategory_name}}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                  <div class="form-group col-lg-3">
+                    <select class="form-control submitable" id="childcategory_id" required>
+                      <option value="">All Child Category</option>
+                      @foreach ($childcategories as $childcategory)
+                      <option value="{{$childcategory->id}}">{{$childcategory->name}}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                  <div class="form-group col-lg-3">
+                    <select class="form-control submitable" id="brand_id" required>
+                      <option value="">All Brand</option>
+                      @foreach ($brands as $brand)
+                      <option value="{{$brand->id}}">{{$brand->name}}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-lg-4">
+                    <select class="form-control submitable"  id="status" required>
+                      <option value="">All Status</option>
+                      <option value="1">Active</option>
+                      <option value="2">Deactive</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-lg-4">
+                    <select class="form-control submitable" id="featured" required>
+                      <option value="">All Featured</option>
+                      <option value="1">Active Featured</option>
+                      <option value="2">Non Featured</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-lg-4">
+                    <select class="form-control submitable" id="todays_deals" required>
+                      <option value="">All </option>
+                      <option value="1">Active Todays Deal</option>
+                      <option value="2">Non Todays Deal</option>
+                    </select>
+                  </div>
+                  
+                </div>
+              {{-- </form> --}}
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -103,8 +165,19 @@
             processing: true,
             serverSide:true,
             autoWidth: false,
-            // scrollX: true,
-            ajax: "{{ route('product.index') }}",
+            ajax: {
+              "url": "{{ route('product.index') }}",
+              "type": "GET",
+              "data": function(d){
+                d.category_id = $('#category_id').val();
+                d.subcategory_id = $('#subcategory_id').val();
+                d.childcategory_id = $('#childcategory_id').val();
+                d.brand_id = $('#brand_id').val();
+                d.status = $('#status').val();
+                d.featured = $('#featured').val();
+                d.todays_deals = $('#todays_deals').val();
+              },
+            },
             columns:[
               {data:'DT_RowIndex' ,name:'DT_RowIndex'},
               {data:'name' ,name:'name'},
@@ -248,6 +321,10 @@
               }
             });
           });
+          //filtering reload
+          $('.submitable').change(function(){
+            $('.ytable').DataTable().ajax.reload();
+          })
         })
         
         

@@ -125,23 +125,49 @@ class ProductController extends Controller
     //index produict
     function index(Request $request)
     {
+        // return $request->category_id;
+        
         if($request->ajax()){
-            $products = Product::latest()->get();
+            $products ="";
+            $query = Product::leftJoin("categories","products.category_id","categories.id")
+            ->leftJOin("sub_categories","products.subcategory_id","sub_categories.id")
+            ->leftJOin("child_categories","products.childcategory_id","child_categories.id")
+            ->leftJOin("brands","products.brand_id","brands.id");
+            if($request->category_id){
+                $query->where('products.category_id',$request->category_id);
+            }
+            if($request->subcategory_id){
+                $query->where('products.subcategory_id',$request->subcategory_id);
+            }
+            if($request->childcategory_id){
+                $query->where('products.childcategory_id',$request->childcategory_id);
+            }
+            if($request->brand_id){
+                $query->where('products.brand_id',$request->brand_id);
+            }
+            if($request->status == 1){
+                $query->where('products.status',1);
+            }
+            if($request->status == 2){
+                $query->where('products.status',0);
+            }
+            if($request->featured == 1){
+                $query->where('products.featured',1);
+            }
+            if($request->featured == 2){
+                $query->where('products.featured',0);
+            }
+            if($request->todays_deals == 1){
+                $query->where('products.todays_deals',1);
+            }
+            if($request->todays_deals == 2){
+                $query->where('products.todays_deals',0);
+            }
+            $products = $query->select("products.*","categories.name as category_name","sub_categories.subcategory_name","child_categories.name as childcategory_name","brands.name as brand_name")
+            ->get();
             
             return DataTables::of($products)
             ->addIndexColumn()
-            ->editColumn('category_name',function ($products){
-                return $category_name = $products->reltocategory->name;
-            })
-            ->editColumn('subcategory_name',function ($products){
-                return $subcategory_name = $products->reltosubcategory->subcategory_name;
-            })
-            ->editColumn('childcategory_name',function ($products){
-                return $childcategory_name = $products->reltochildcategory->name;
-            })
-            ->editColumn('brand_name',function ($products){
-                return $brand_name = $products->reltobrand->name;
-            })
             ->editColumn('status',function ($products){
                 if($products->status == 1){
                     return ' <button id="'.$products->id.'" class="btn btn-success status">Active</button>';
@@ -167,16 +193,25 @@ class ProductController extends Controller
                 }
             })
             ->addColumn('action', function($products){
-                $action_btn = '<a href="" class="btn btn-info btn-sm" id="edit" data-id="'.$products->id.'"  data-toggle="modal" data-target="#editModal"> <i class="fas fa-edit"></i></a>
+                $action_btn = '<a href="" class="btn btn-info btn-sm mt-2" id="edit" data-id="'.$products->id.'"  data-toggle="modal" data-target="#editModal"> <i class="fas fa-edit"></i></a>
                 
-                <a href="'.route('coupon.delete',[$products->id]).'" class="btn btn-success btn-sm " id="delete_coupon"><i class="fas fa-eye"></i></a>
+                <a href="'.route('coupon.delete',[$products->id]).'" class="btn btn-success btn-sm mt-2" id="delete_coupon"><i class="fas fa-eye"></i></a>
                 <a href="'.route('product.delete',[$products->id]).'" class="btn btn-danger btn-sm mt-2" id="delete_product"><i class="fas fa-trash"></i></a>';
                 return $action_btn;
             })
             ->rawColumns(['action','category_name','subcategory_name','childcategory_name','brand_name','status','featured','todays_deals'])
             ->make(true);
         }
-        return view('admin.product.index');
+        $categories = Category::all();
+        $subcategories = SubCategory::all();
+        $childcategories = ChildCategory::all();
+        $brands = Brand::all();
+        return view('admin.product.index',[
+            'categories' => $categories,
+            'subcategories' => $subcategories,
+            'childcategories' => $childcategories,
+            'brands' => $brands,
+        ]);
     }
     //status change
     function product_status($id)
