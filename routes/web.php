@@ -14,4 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Auth::routes();
 Route::get('/', [FrontendController::class, 'index'])->name('home');
+Route::get('/home', [FrontendController::class, 'index'])->name('home');
+Route::get('/product/detail/{id}', [FrontendController::class, 'product_detail'])->name('product.detail');
+

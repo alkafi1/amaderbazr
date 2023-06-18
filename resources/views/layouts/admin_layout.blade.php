@@ -209,8 +209,8 @@
   $(function () {
     // Summernote
     $('#summernote').summernote()
-
-    // CodeMirror
+    $('#summernote2').summernote()
+    // // CodeMirror
     CodeMirror.fromTextArea(document.getElementById("codeMirrorDemo"), {
       mode: "htmlmixed",
       theme: "monokai"

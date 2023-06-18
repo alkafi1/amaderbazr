@@ -5,22 +5,75 @@
 
 @section('frontend_content')
     <!-- Banner -->
-	<div class="banner">
-		<div class="banner_background" style="background-image:url(images/banner_background.jpg)"></div>
-		<div class="container fill_height">
-			<div class="row fill_height">
-				<div class="banner_product_image"><img src="images/banner_product.png" alt=""></div>
-				<div class="col-lg-5 offset-lg-4 fill_height">
-					<div class="banner_content">
-						<h1 class="banner_text">new era of smartphones</h1>
-						<div class="banner_price"><span>$530</span>$460</div>
-						<div class="banner_product_name">Apple Iphone 6s</div>
-						<div class="button banner_button"><a href="#">Shop Now</a></div>
+	{{-- <div class="owl-carousel owl-theme banner_2_slider">
+		<div class="banner_2_dots"></div>
+		<!-- Banner 2 Slider Item -->
+		@foreach ($banner_products as $banner_product)
+		<div class="owl-item owl-active">
+			<div class="banner">
+				
+				<div class="banner_background" style="background-image:url({{asset('frontend/images/banner_background.jpg')}}"></div>
+				<div class="container fill_height">
+					<div class="row fill_height">
+						<div class="banner_product_image">
+							<img src="{{asset('uploads/product/thumbnail/')}}/{{$banner_product->thumnail}})" alt="">
+						</div>
+						<div class="col-lg-5 offset-lg-4 fill_height">
+							<div class="banner_content">
+								<h1 class="banner_text">{{$banner_product->name}}</h1>
+								<div class="banner_price"><span>${{$banner_product->selleing_price}}</span>${{$banner_product->discount_price}}</div>
+								<div class="banner_product_name">{{$banner_product->reltobrand->name}}</div>
+								<div class="button banner_button"><a href="#">Shop Now</a></div>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+				
+			</div>
+		</div>
+		@endforeach
+	</div> --}}
+	<div class="banner_2">
+		<div class="banner_2_background" style="background-image:url({{asset('frontend/images/banner_2_background.jpg')}})"></div>
+		<div class="banner_2_container">
+			<div class="banner_2_dots"></div>
+			<!-- Banner 2 Slider -->
+
+			<div class="owl-carousel owl-theme banner_2_slider">
+
+				<!-- Banner 2 Slider Item -->
+				@foreach ($banner_products as $banner_product)
+				<div class="owl-item ">
+					<div class="banner_2_item">
+						<div class="container fill_height">
+							<div class="row fill_height">
+								<div class="col-lg-4 col-md-6 fill_height">
+									<div class="banner_2_content">
+										<div class="banner_2_category">{{$banner_product->reltobrand->name}}</div>
+										<div class="banner_2_title">{{$banner_product->name}}</div>
+										<div class="banner_2_text">{{$banner_product->name}}</div>
+										{{-- <div class="rating_r rating_r_4 banner_2_rating"><i></i><i></i><i></i><i></i><i></i></div> --}}
+										<div class="button banner_2_button"><a href="#">Shop Now</a></div>
+									</div>
+									
+								</div>
+								<div class="col-lg-8 col-md-6 fill_height">
+									<div class="banner_2_image_container">
+										<div class="banner_2_image"><img src="{{asset('uploads/product/thumbnail/')}}/{{$banner_product->thumnail}}" alt=""></div>
+										{{-- <div class="banner_2_image"><img src="images/banner_2_product.png" alt=""></div> --}}
+									</div>
+								</div>
+							</div>
+						</div>			
 					</div>
 				</div>
+				@endforeach
+
 			</div>
 		</div>
 	</div>
+	
 
 	<!-- Characteristics -->
 
@@ -1563,7 +1616,7 @@
 			<div class="owl-carousel owl-theme banner_2_slider">
 
 				<!-- Banner 2 Slider Item -->
-				<div class="owl-item">
+				<div class="owl-item ">
 					<div class="banner_2_item">
 						<div class="container fill_height">
 							<div class="row fill_height">

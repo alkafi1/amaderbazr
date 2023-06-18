@@ -126,8 +126,8 @@ Route::group(['middleware' => 'is_admin'], function(){
         Route::get('/create', [ProductController::class, 'product_create'])->name('product.create');
         Route::post('/store', [ProductController::class, 'product_store'])->name('product.store');
         Route::delete('/delete/{id}', [ProductController::class, 'product_delete'])->name('product.delete');
-        Route::get('/edit/{id}', [ProductController::class, 'brand_edit']);
-        Route::post('/update', [ProductController::class, 'brand_update'])->name('brand.update');
+        Route::get('/edit/{id}', [ProductController::class, 'product_edit'])->name('product.edit');
+        Route::post('/update/{id}', [ProductController::class, 'product_update'])->name('product.update');
         Route::get('/status/{id}', [ProductController::class, 'product_status'])->name('product.status');
         Route::get('/featured/{id}', [ProductController::class, 'product_featured'])->name('product.featured');
         Route::get('/todays_deals/{id}', [ProductController::class, 'product_todays_deals'])->name('product.todays_deals');

@@ -52,6 +52,7 @@ class ProductController extends Controller
             'code' => 'required',
             'unit' => 'required',
             'tags' => 'required',
+            'short_description' => 'required',
             'description' => 'required',
             'stock_quantity' => 'required',
             'color' => 'required',
@@ -68,18 +69,29 @@ class ProductController extends Controller
         $data['code'] = $request->code;
         $data['slug'] = Str::slug($request->name,'-');
         $data['unit'] = $request->unit;
+        $data['short_description'] = $request->short_description;
+        $data['description'] = $request->description;
         $data['stock_quantity'] = $request->stock_quantity;
         $data['purchase_price'] = $request->purchase_price;
         $data['selleing_price'] = $request->selleing_price;
         $data['discount_price'] = $request->discount_price;
         $data['pickup_point_id'] = $request->pickup_point_id;
         $data['warehouse'] = $request->warehouse_id;
-        $data['featured'] = $request->featured;
-        $data['todays_deals'] = $request->todays_deals;
+        if($request->featured){
+            $data['featured'] = $request->featured;
+        }
+        if($request->banner_slider){
+            $data['banner_slider'] = $request->banner_slider;
+        }
+        if($request->todays_deals){
+            $data['todays_deals'] = $request->todays_deals;
+        }
         if($request->status){
             $data['status'] = $request->status;
         }
-        $data['cash_on_delivery'] = $request->cash_on_delivery;
+        if($request->cash_on_delivery){
+            $data['cash_on_delivery'] = $request->cash_on_delivery;
+        }
         $data['added_by'] =Auth::user()->id;
         $data['date'] = date('d-m-y');
         $data['month'] = date('F');
@@ -92,7 +104,7 @@ class ProductController extends Controller
         {
             $thumbnail = $request->thumbnail;
             $extension = $thumbnail->getClientOriginalExtension();
-            $image_name = $product_id.'-thumb-'.'.'.$extension;
+            $image_name = $product_id.'-thumb'.'.'.$extension;
             Image::make($thumbnail)->save(public_path('/uploads/product/thumbnail/').$image_name)->resize(300,300);
             // $data['thumnail'] = $image_name;
             $thumb = $image_name;
@@ -111,8 +123,9 @@ class ProductController extends Controller
                 Image::make($image)->save(public_path('/uploads/product/image/').$image_name)->resize(300,300);
                 array_push($images,$image_name);
             }
+            $image_json = json_encode($images);
             Product::where('id',$product_id)->update([
-                'images' => $images,
+                'images' => $image_json,
             ]);
         }
         $message = array('message' => 'Product Added Successfully.!',
@@ -193,9 +206,9 @@ class ProductController extends Controller
                 }
             })
             ->addColumn('action', function($products){
-                $action_btn = '<a href="" class="btn btn-info btn-sm mt-2" id="edit" data-id="'.$products->id.'"  data-toggle="modal" data-target="#editModal"> <i class="fas fa-edit"></i></a>
+                $action_btn = '<a href="'.route('product.edit',[$products->id]).'" class="btn btn-info btn-sm mt-2"> <i class="fas fa-edit"></i></a>
                 
-                <a href="'.route('coupon.delete',[$products->id]).'" class="btn btn-success btn-sm mt-2" id="delete_coupon"><i class="fas fa-eye"></i></a>
+                <a href="'.route('product.detail',[$products->id]).'" class="btn btn-success btn-sm mt-2" id="delete_coupon"><i class="fas fa-eye"></i></a>
                 <a href="'.route('product.delete',[$products->id]).'" class="btn btn-danger btn-sm mt-2" id="delete_product"><i class="fas fa-trash"></i></a>';
                 return $action_btn;
             })
@@ -212,6 +225,128 @@ class ProductController extends Controller
             'childcategories' => $childcategories,
             'brands' => $brands,
         ]);
+    }
+
+    //product edit 
+    function product_edit($id)
+    {
+        $product = Product::where('id',$id)->first();
+        $categories = Category::all();
+        $subcategories = SubCategory::all();
+        $childcategories = ChildCategory::all();
+        $brands = Brand::all();
+        $warehouses = Warehouse::all();
+        $pickupopoints = PickupPoint::all();
+        return view('admin.product.edit',[
+            'product' => $product,
+            'categories' => $categories,
+            'subcategories' => $subcategories,
+            'childcategories' => $childcategories,
+            'brands' => $brands,
+            'warehouses' => $warehouses,
+            'pickupopoints' => $pickupopoints,
+        ]);    
+    }
+    function product_update(Request $request,$id)
+    {
+        
+        $product = Product::where('id',$id)->first();
+        $request->validate([
+            'category_id' => 'required',
+            'subcategory_id' => 'required',
+            'brand_id' => 'required',
+            'name' => 'required',
+            'code' => 'required',
+            'unit' => 'required',
+            'tags' => 'required',
+            'description' => 'required',
+            'short_description' => 'required',
+            'stock_quantity' => 'required',
+            'color' => 'required',
+            'purchase_price' => 'required',
+            'selleing_price' => 'required',
+            'discount_price' => 'required',
+        ]);
+        $data = array();
+        $data['category_id'] = $request->category_id;
+        $data['subcategory_id'] = $request->subcategory_id;
+        $data['childcategory_id'] = $request->childcategory_id;
+        $data['brand_id'] = $request->brand_id;
+        $data['name'] = $request->name;
+        $data['code'] = $request->code;
+        $data['slug'] = Str::slug($request->name,'-');
+        $data['unit'] = $request->unit;
+        $data['short_description'] = $request->short_description;
+        $data['description'] = $request->description;
+        $data['stock_quantity'] = $request->stock_quantity;
+        $data['purchase_price'] = $request->purchase_price;
+        $data['selleing_price'] = $request->selleing_price;
+        $data['discount_price'] = $request->discount_price;
+        $data['pickup_point_id'] = $request->pickup_point_id;
+        $data['warehouse'] = $request->warehouse_id;
+        if($request->featured){
+            $data['featured'] = $request->featured;
+        }
+        if($request->banner_slider){
+            $data['banner_slider'] = $request->banner_slider;
+        }
+        if($request->todays_deals){
+            $data['todays_deals'] = $request->todays_deals;
+        }
+        if($request->status){
+            $data['status'] = $request->status;
+        }
+        if($request->cash_on_delivery){
+            $data['cash_on_delivery'] = $request->cash_on_delivery;
+        }
+        $data['added_by'] =Auth::user()->id;
+        $data['date'] = date('d-m-y');
+        $data['month'] = date('F');
+        $data['tags'] = $request->tags;
+        $data['video'] = $request->video;
+        $data['color'] = $request->color;
+        $data['size'] = $request->size;
+        $product_id = Product::where('id',$id)->update($data);
+        if($request->thumbnail)
+        {
+            $image_path = public_path('/uploads/product/thumbnail/'.$product->thumnail);
+            unlink($image_path);
+            $thumbnail = $request->thumbnail;
+            $extension = $thumbnail->getClientOriginalExtension();
+            $image_name = $product_id.'-thumb'.'.'.$extension;
+            Image::make($thumbnail)->save(public_path('/uploads/product/thumbnail/').$image_name)->resize(300,300);
+            // $data['thumnail'] = $image_name;
+            $thumb = $image_name;
+            Product::where('id',$id)->update([
+                'thumnail' => $thumb,
+            ]);
+            
+        }
+        $images = array();
+        if($request->hasFile('image'))
+        {
+            foreach(json_decode($product->images) as $img)
+            {
+                $image_path = public_path('/uploads/product/image/'.$img);
+                unlink($image_path);
+            }
+            foreach($request->file('image') as $key=>$image)
+            {
+                
+                $extension = $image->getClientOriginalExtension();
+                $image_name = $product_id.'-image-'.$key.'.'.$extension;
+                Image::make($image)->save(public_path('/uploads/product/image/').$image_name)->resize(300,300);
+                array_push($images,$image_name);
+            }
+            $image_json = json_encode($images);
+            Product::where('id',$id)->update([
+                'images' => $image_json,
+            ]);
+        }
+        $message = array('message' => 'Product Update Successfully.!',
+            'alert-type' => 'success',       
+                );
+            return back()->with($message);
     }
     //status change
     function product_status($id)
@@ -268,6 +403,13 @@ class ProductController extends Controller
     function product_delete($id)
     {
         $product = Product::where('id',$id)->delete();
+        $image_thumb_path = public_path('/uploads/product/thumbnail/'.$product->thumnail);
+        unlink($image_thumb_path);
+        foreach(json_decode($product->images) as $img)
+        {
+            $image_path = public_path('/uploads/product/image/'.$img);
+            unlink($image_path);
+        }
         return response()->json('Product Delete Successfully!');
        
     }
@@ -275,7 +417,7 @@ class ProductController extends Controller
     function get_subcategory($id)
     {
         $subcategories = SubCategory::where('category_id',$id)->get();
-        $str = '<option value="" disabled>--Select Sub Category --</option>';
+        $str = '<option value="" >--Select Sub Category --</option>';
         foreach($subcategories as $subcategory)
         {
             $str.=  '<option value="'.$subcategory->id.'">'.$subcategory->subcategory_name.'</option>"';
@@ -287,7 +429,7 @@ class ProductController extends Controller
     function get_childcategory($id)
     {
         $childcategories = ChildCategory::where('subcategory_id',$id)->get();
-        $str = '<option value="" disabled>--Select Child Category --</option>';
+        $str = '<option value="" >--Select Child Category --</option>';
         foreach($childcategories as $childcategory)
         {
             $str.=  '<option value="'.$childcategory->id.'">'.$childcategory->name.'</option>"';

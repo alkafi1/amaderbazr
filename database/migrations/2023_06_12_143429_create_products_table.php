@@ -25,7 +25,8 @@ return new class extends Migration
             $table->string('tags')->nullable();
             $table->string('thumnail')->nullable();
             $table->string('images')->nullable();
-            $table->string('description')->nullable();
+            $table->text('short_description')->nullable();
+            $table->text('description')->nullable();
             $table->string('video')->nullable();
             $table->string('slug')->nullable();
             $table->string('purchase_price')->nullable();
@@ -37,6 +38,7 @@ return new class extends Migration
             $table->integer('warehouse')->nullable();
             $table->integer('featured')->default(0);
             $table->integer('todays_deals')->default(0);
+            $table->integer('banner_slider')->default(0);
             $table->integer('pickup_point_id')->nullable();
             $table->date('date')->nullable();
             $table->string('month')->nullable();
