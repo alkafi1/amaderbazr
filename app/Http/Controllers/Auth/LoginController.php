@@ -55,7 +55,7 @@ class LoginController extends Controller
                 return redirect()->route('admin.dashboard')->with($notifation);
             }
             else{
-                $notifation = array('message' => 'You are Logged In!',
+                $notifation = array('message' => 'You Not Admin Here',
                              'alert-type' => 'success',       
                         );
                 return redirect()->route('admin.login')->with($notifation); 

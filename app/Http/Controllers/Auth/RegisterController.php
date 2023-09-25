@@ -65,30 +65,30 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        // return User::create([
-        //     'name' => $data['name'],
-        //     'email' => $data['email'],
-        //     'password' => Hash::make($data['password']),
-        // ]);
-        User::create([
+        return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
-        if(Auth::attempt(array('email'=>$data['email'],'password'=>$data['password'])))
-        {
-            if(Auth::user()->is_admin == 1){
-                $notifation = array('message' => 'You are Logged In!',
-                             'alert-type' => 'success',       
-                        );
-                return redirect()->route('admin.dashboard')->with($notifation);
-            }
-            else{
-                $notifation = array('message' => 'You are Not admin Now. Wait For confirmation!!',
-                             'alert-type' => 'warning',       
-                        );
-                return redirect()->route('admin.login')->with($notifation); 
-            }
-        }
+        // User::create([
+        //     'name' => $data['name'],
+        //     'email' => $data['email'],
+        //     'password' => Hash::make($data['password']),
+        // ]);
+        // if(Auth::attempt(array('email'=>$data['email'],'password'=>$data['password'])))
+        // {
+        //     if(Auth::user()->is_admin == 1){
+        //         $notifation = array('message' => 'You are Logged In!',
+        //                      'alert-type' => 'success',       
+        //                 );
+        //         return redirect()->route('admin.dashboard')->with($notifation);
+        //     }
+        //     else{
+        //         $notifation = array('message' => 'You are Not admin Now. Wait For confirmation!!',
+        //                      'alert-type' => 'warning',       
+        //                 );
+        //         return redirect()->route('admin.login')->with($notifation); 
+        //     }
+        // }
     }
 }

@@ -17,6 +17,7 @@ class FrontendController extends Controller
         $categories = Category::all();
         $products = Product::where('status',1)->get();
         $banner_products = Product::where('banner_slider',1)->get();
+        $featured_products = Product::where('featured',1)->get();
         // $subcategories = SubCategory::all();
         // $childcategories = ChildCategory::all();
         $brands = Brand::all();
@@ -27,6 +28,7 @@ class FrontendController extends Controller
             'brands' => $brands,
             'products' => $products,
             'banner_products' => $banner_products,
+            'featured_products' => $featured_products,
         ]);
     }
     //product details

@@ -304,7 +304,7 @@
 
 							<!-- Product Panel -->
 							<div class="product_panel panel active">
-								<div class="featured_slider slider">
+								<div class="featured_slider  slider">
 
 									<!-- Slider Item -->
 									<div class="featured_slider_item">

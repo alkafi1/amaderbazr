@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\WebsiteSetting;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,5 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        $website_setting = WebsiteSetting::get()->first();
+        view()->share('website_setting',$website_setting);
     }
 }
